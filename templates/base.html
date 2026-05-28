@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}TollTrack PH{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green: { 700: '#15803d', 800: '#166534', 900: '#14532d' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+  {% if session.user_id %}
+  <nav class="bg-green-800 text-white shadow">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="/dashboard" class="text-lg font-bold tracking-tight">TollTrack PH</a>
+      <div class="flex items-center gap-4 text-sm">
+        <span class="text-green-200 hidden sm:block">{{ email }}</span>
+        <a href="/setup" class="hover:underline">Settings</a>
+        <a href="/logout" class="hover:underline">Log out</a>
+      </div>
+    </div>
+  </nav>
+  {% endif %}
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="mb-4 px-4 py-3 rounded-lg text-sm font-medium
+          {% if category == 'error' %}bg-red-100 text-red-800 border border-red-200
+          {% else %}bg-green-100 text-green-800 border border-green-200{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
