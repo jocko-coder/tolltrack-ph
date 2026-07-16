@@ -12,23 +12,25 @@ oversized-type CTA).
 ## Slide map
 
 1. Hook — duotone mesh plate, two glass cards, "Your clinic closed at 6. / *She didn't.*"
-2. **Real Home / Morning Report macro** — "₱88,497 is waiting to be collected", mascot, ~20° tilt
+2. **Real Analytics macro** — "Revenue by dentist · ₱592,540 / ₱315,680", ~18° tilt
 3. Call-log macro — Maria Dela Cruz card, summary chip sharp, defocused bezel corner
 4. Taglish signature — patient/Perla bubbles, verbatim copy, "Booked." pill
 5. **Real Perla Scribe screen** floating as a glass panel over duotone mesh
 6. Rose accent macro — "Live Call" tile, rings sharp, schedule card blurred left
-7. **Hero** — monochrome sculptural hand holding phone showing the **real Home screen**
+7. **Hero** — monochrome sculptural hand holding phone showing the **real Visits calendar**
 8. Hero, punched in ~20%, phone low-left
 9. CTA — ink base, ghosted cards, "We answer. You drill." + oversized "Save this design"
 
 Slides 2, 5, 7, 8 use faithful HTML recreations of the actual Perla product
-screens (`src/masterUI.js`): the dark **Home / Morning Report**, the **Perla
-Scribe** notes list, and the **Ask Perla** chat (built but currently unused).
-Per that direction they carry the real product's figures (**₱88,497 · 38 calls ·
-21 booked · 4 birthdays**) and the Perla **mascot** — which the original
-handoff's "no mascot" rule forbade; the real-UI request overrides it. Slide 6
-is the lone remaining invented frame (the rose Live-Call tile), kept as the
-set's single warm accent.
+screens (`src/masterUI.js`): the **Analytics / reports** dashboard (slide 2
+macro), the **Perla Scribe** notes list (slide 5 panel), and the **Visits**
+month calendar (slides 7/8 hero). They carry the product's real figures
+(₱592,540 · ₱315,680 · ₱790,780 paid; July 2026 grid; the Joshua Lim / Dr. Hachi
+appointment). `masterHome` and `masterAsk` (Home / Morning Report and the Ask
+Perla chat) are also built in `masterUI.js` but currently unused — the mascot
+recreation on those didn't meet the bar, so mascot-free screens were used
+instead, which keeps the handoff's "no mascot" rule intact. Slide 6 is the lone
+invented frame (the rose Live-Call tile), kept as the set's single warm accent.
 
 ## Deviations from the handoff (forced by environment)
 
@@ -69,12 +71,11 @@ node src/run.js 2 7  # just slides 2 and 7
 
 ## QA (per handoff checklist)
 
-- Figures verbatim from the product screens: real Home shows ₱88,497 · 38 calls ·
-  21 booked (slides 2/7/8); the invented Master-A frame (slide 6) keeps 14 · 7.
-  No invented claims or superlatives.
+- Figures verbatim from the product screens: Analytics (slide 2) shows
+  ₱592,540 / ₱315,680; Visits (slides 7/8) shows the July 2026 grid + the
+  Joshua Lim · Composite Filling · Dr. Hachi appointment. No invented claims.
 - Rose is confined to the Live-Call tile (slide 6) and small chips.
-- Mascot appears on the real-UI slides (2/7/8) as in the actual product —
-  intentional override of the handoff's "no mascot" rule. Wordmark on 1 and 9 only.
+- No mascot anywhere in the shipped set. Wordmark on slides 1 and 9 only.
 - Taglish verbatim: "Gusto ko magpa-linis ng ngipin." / "Sige po! May slot
   Miyerkules 2PM. Book na po?"
 - Scribe note names/text verbatim from the real screen: Jose Ramirez, Camille

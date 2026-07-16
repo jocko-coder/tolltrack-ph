@@ -40,10 +40,10 @@ async function main() {
   // Chromium's compositor texture limits and drops tiles.
   {
     const { masterA, CSS_A } = require('./masterA');
-    const { CSS_UI, masterHome } = require('./masterUI');
+    const { CSS_UI, masterAnalytics } = require('./masterUI');
     const plates = [
       { name: 'plate-a', css: CSS_A, body: masterA() },
-      { name: 'plate-home', css: CSS_UI, body: masterHome() },
+      { name: 'plate-analytics', css: CSS_UI, body: masterAnalytics() },
     ];
     const pctx = await browser.newContext({
       viewport: { width: 430, height: 932 },

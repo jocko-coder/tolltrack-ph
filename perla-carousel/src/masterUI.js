@@ -188,6 +188,13 @@ const I = {
   clock: `<svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#35D6C7" stroke-width="1.6"/><path d="M10 6v4.2l2.6 1.6" fill="none" stroke="#35D6C7" stroke-width="1.6" stroke-linecap="round"/></svg>`,
   pencil: `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M13.5 3.5l3 3L7 16l-3.5.5L4 13z" fill="none" stroke="#35D6C7" stroke-width="1.6" stroke-linejoin="round"/></svg>`,
   send: `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 12L20 4l-6 16-2.5-6.5z" fill="#06272E"/></svg>`,
+  chevR: `<svg width="16" height="16" viewBox="0 0 20 20"><path d="M8 4l6 6-6 6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  chevL: `<svg width="16" height="16" viewBox="0 0 20 20"><path d="M12 4l-6 6 6 6" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  plusW: `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 3.5v13M3.5 10h13" stroke="#06272E" stroke-width="2" stroke-linecap="round"/></svg>`,
+  plusBig: `<svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  phoneSm: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.7"><path d="M6 3.5c1 0 1.6.6 2 1.7l.7 2c.3.9.1 1.5-.6 2.1l-1 .8a11 11 0 0 0 4.5 4.5l.8-1c.6-.7 1.2-.9 2.1-.6l2 .7c1.1.4 1.7 1 1.7 2v2c0 1.3-1 2.3-2.4 2.1C10.6 21.3 2.7 13.4 2 6.4 1.8 5 2.8 4 4.1 4z"/></svg>`,
+  checkW: `<svg width="15" height="15" viewBox="0 0 16 16"><path d="M2.5 8.2 6 11.5 13.5 4" fill="none" stroke="#06272E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  swap: `<svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1.7"><path d="M4 7h11l-2.5-2.5M16 13H5l2.5 2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
 };
 
 function statusBar(time, { bell = false, low = false } = {}) {
@@ -349,4 +356,179 @@ function masterAsk() {
   </div>`;
 }
 
-module.exports = { CSS_UI, masterHome, masterScribe, masterAsk, mascotSVG };
+/* ================= VISITS (calendar) & ANALYTICS ================= */
+const peso = () => '<span class="pesoG">P</span>';
+
+const CSS_EXTRA = `
+/* ---- Visits / calendar ---- */
+.vis-scroll { padding: 0 16px; }
+.cal-card { padding: 20px 20px 22px; margin-top: 10px; }
+.cal-head { display: flex; align-items: flex-start; justify-content: space-between; }
+.cal-head .mo { font-size: 30px; font-weight: 800; letter-spacing: -0.01em; line-height: 1; }
+.cal-head .yr { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.45); margin-top: 8px; display: flex; align-items: center; gap: 10px; }
+.cal-seg { display: flex; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 999px; padding: 4px; }
+.cal-seg .s { padding: 8px 18px; border-radius: 999px; font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.5); }
+.cal-seg .s.on { background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; }
+.cal-ctrls { display: flex; align-items: center; gap: 8px; }
+.cal-today { padding: 9px 16px; border-radius: 999px; border: 1px solid #1B8E86; color: #35D6C7; font-size: 13px; font-weight: 700; }
+.cal-nav { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.65); }
+.cal-grid { margin-top: 16px; }
+.cal-wk { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 4px; }
+.cal-wk span { text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: rgba(255,255,255,0.35); }
+.cal-row { display: grid; grid-template-columns: repeat(7,1fr); }
+.cal-cell { height: 66px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 4px; }
+.cal-day { width: 44px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 13px; font-size: 19px; font-weight: 600; color: #EAF4F2; }
+.cal-day.dim { color: rgba(255,255,255,0.22); }
+.cal-day.today { background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; font-weight: 800; box-shadow: 0 8px 22px rgba(21,194,182,0.5); }
+.cal-day.sel { border: 1.5px solid #2BB6AA; color: #35D6C7; }
+.cal-dots { display: flex; gap: 3px; margin-top: 3px; height: 8px; }
+.cd { width: 6px; height: 6px; border-radius: 50%; display: block; }
+.cd.o { background: transparent; border: 1.5px solid rgba(255,255,255,0.45); width: 5px; height: 5px; }
+.cal-badge { margin-top: 3px; min-width: 20px; height: 20px; border-radius: 999px; background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.cal-legend { border-top: 1px solid rgba(255,255,255,0.07); margin-top: 12px; padding-top: 18px; display: flex; flex-wrap: wrap; gap: 12px 22px; }
+.cal-legend .lg { display: flex; align-items: center; gap: 8px; font-size: 15px; color: rgba(255,255,255,0.7); }
+.cal-legend .lg .d { width: 11px; height: 11px; border-radius: 50%; }
+.cal-legend .lg .d.o { background: transparent; border: 1.6px solid rgba(255,255,255,0.5); }
+
+.day-head { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.day-head .t b { font-size: 25px; font-weight: 800; letter-spacing: -0.01em; }
+.day-head .t p { font-size: 15px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.day-head .nb { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; font-weight: 700; font-size: 15px; padding: 12px 20px; border-radius: 999px; box-shadow: 0 10px 24px rgba(21,194,182,0.4); }
+.appt { position: relative; margin-top: 18px; padding: 20px 20px 20px 26px; overflow: hidden; }
+.appt .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: #E85A9C; }
+.appt .r1 { display: flex; align-items: center; gap: 12px; }
+.appt .tm { font-size: 16px; font-weight: 700; color: #35D6C7; }
+.appt .nm { font-size: 21px; font-weight: 800; letter-spacing: -0.01em; }
+.appt .stat { padding: 6px 13px; border-radius: 999px; border: 1px solid #1B8E86; color: #35D6C7; font-size: 13px; font-weight: 700; }
+.appt .proc { font-size: 16px; color: rgba(255,255,255,0.55); margin-top: 10px; }
+.appt .doc { display: flex; align-items: center; gap: 9px; margin-top: 12px; font-size: 15px; color: rgba(255,255,255,0.6); }
+.appt .doc .pd { width: 9px; height: 9px; border-radius: 50%; background: #E85A9C; }
+.appt .doc .av { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.appt .ph { display: flex; align-items: center; gap: 9px; margin-top: 10px; font-size: 15px; color: rgba(255,255,255,0.55); }
+.appt .btns { display: flex; gap: 12px; margin-top: 18px; }
+.appt .bt { display: inline-flex; align-items: center; gap: 7px; padding: 12px 18px; border-radius: 999px; font-size: 15px; font-weight: 700; border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.8); }
+.appt .bt.done { background: linear-gradient(160deg, #1ED0C0, #12A093); color: #06272E; border-color: transparent; box-shadow: 0 8px 20px rgba(21,194,182,0.4); }
+.appt .cancel { margin-top: 12px; display: inline-flex; align-items: center; padding: 12px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.75); font-size: 15px; font-weight: 700; }
+
+/* ---- Analytics ---- */
+.an-scroll { padding: 0 18px; }
+.an-card { padding: 22px 22px; margin-top: 16px; }
+.an-card h3 { font-size: 23px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 6px; }
+.an-row { display: flex; align-items: center; gap: 14px; height: 44px; }
+.an-lb { width: 132px; flex: none; font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.82); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.an-bar { flex: 1; height: 15px; }
+.an-bar i { display: block; height: 15px; border-radius: 999px; background: linear-gradient(90deg, #0FA79B, #2FE0CE); box-shadow: 0 0 16px rgba(21,194,182,0.35); }
+.an-val { width: 108px; flex: none; text-align: right; font-size: 17px; font-weight: 800; color: #EAF4F2; }
+.an-fab { position: absolute; right: 22px; bottom: 104px; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(160deg, #1ED0C0, #12A093); display: flex; align-items: center; justify-content: center; box-shadow: 0 14px 30px rgba(21,194,182,0.5); }
+.an-ghost { font-size: 22px; font-weight: 800; color: rgba(255,255,255,0.14); margin: 20px 4px 0; }
+`;
+
+/* ---- Visits screen ---- */
+const T = '#15C2B6', PK = '#E85A9C', BL = '#4A7BE0', AM = '#E0A54A';
+const CAL_ROWS = [
+  [{ n: 28, dim: 1 }, { n: 29, dim: 1 }, { n: 30, dim: 1 }, { n: 1, dots: [T, PK] }, { n: 2, dots: [T, PK, BL] }, { n: 3, badge: 4 }, { n: 4, badge: 5 }],
+  [{ n: 5, dots: [PK, T, T] }, { n: 6, dots: [PK] }, { n: 7, dots: ['o', T, PK] }, { n: 8, dots: [T, PK] }, { n: 9, today: 1, dots: [T, PK] }, { n: 10, dots: [BL] }, { n: 11 }],
+  [{ n: 12 }, { n: 13, dots: [PK] }, { n: 14, badge: 7 }, { n: 15, sel: 1 }, { n: 16 }, { n: 17 }, { n: 18 }],
+  [{ n: 19 }, { n: 20 }, { n: 21 }, { n: 22 }, { n: 23 }, { n: 24 }, { n: 25 }],
+  [{ n: 26 }, { n: 27 }, { n: 28 }, { n: 29 }, { n: 30 }, { n: 31 }, { n: 1, dim: 1 }],
+];
+function calCell(c) {
+  let inner;
+  if (c.badge != null) {
+    inner = `<div class="cal-day">${c.n}</div><div class="cal-badge">${c.badge}</div>`;
+  } else {
+    const cls = ['cal-day', c.dim ? 'dim' : '', c.today ? 'today' : '', c.sel ? 'sel' : ''].join(' ');
+    const dots = (c.dots || []).map((d) => (d === 'o' ? '<span class="cd o"></span>' : `<span class="cd" style="background:${d}"></span>`)).join('');
+    inner = `<div class="${cls}">${c.n}</div><div class="cal-dots">${dots}</div>`;
+  }
+  return `<div class="cal-cell">${inner}</div>`;
+}
+function masterVisits() {
+  const grid = CAL_ROWS.map((r) => `<div class="cal-row">${r.map(calCell).join('')}</div>`).join('');
+  return `<div class="uiscreen">
+    ${statusBar('11:31', { bell: true })}
+    <div class="vis-scroll">
+      <div class="ui-card cal-card">
+        <div class="cal-head">
+          <div><div class="mo">July</div><div class="yr">2026 <span class="cal-nav">${I.chevR}</span></div></div>
+          <div class="cal-seg"><div class="s on">Month</div><div class="s">Week</div></div>
+          <div class="cal-ctrls"><div class="cal-today">Today</div><div class="cal-nav">${I.chevL}</div></div>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-wk"><span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span></div>
+          ${grid}
+        </div>
+        <div class="cal-legend">
+          <div class="lg"><span class="d" style="background:${T}"></span>Dr cj</div>
+          <div class="lg"><span class="d" style="background:${AM}"></span>dr jocko</div>
+          <div class="lg"><span class="d" style="background:${BL}"></span>Dr. Prada</div>
+          <div class="lg"><span class="d" style="background:${PK}"></span>Dr. Hachi</div>
+          <div class="lg"><span class="d" style="background:#9BB84A"></span>Test</div>
+          <div class="lg"><span class="d o"></span>Unassigned</div>
+        </div>
+      </div>
+
+      <div class="day-head">
+        <div class="t"><b>Thursday, July 9</b><p>2 appointments</p></div>
+        <div class="nb">${I.plusW}New booking</div>
+      </div>
+      <div class="ui-card appt">
+        <div class="bar"></div>
+        <div class="r1"><span class="tm">12:00 PM</span><span class="nm">Joshua Lim</span><span class="stat">Confirmed</span></div>
+        <div class="proc">Composite Filling</div>
+        <div class="doc"><span class="pd"></span><span class="av">H</span>Dr. Hachi</div>
+        <div class="ph">${I.phoneSm}09171371370</div>
+        <div class="btns"><span class="bt done">${I.checkW} Done</span><span class="bt">${I.swap} Reschedule</span><span class="bt">No-show</span></div>
+        <div class="cancel">Cancel</div>
+      </div>
+    </div>
+    ${navBar('visits')}
+  </div>`;
+}
+
+/* ---- Analytics screen ---- */
+function anCard(title, rows, max) {
+  const body = rows.map((r) => `<div class="an-row"><div class="an-lb">${r[0]}</div><div class="an-bar"><i style="width:${Math.round((r[1] / max) * 100)}%"></i></div><div class="an-val">${peso()}${r[2]}</div></div>`).join('');
+  return `<div class="ui-card an-card"><h3>${title}</h3>${body}</div>`;
+}
+function masterAnalytics() {
+  const service = anCard('Revenue by service', [
+    ['Teeth Whiteni…', 162000, '162,000'],
+    ['Root Canal Th…', 160880, '160,880'],
+    ['Tooth Extraction', 32760, '32,760'],
+    ['Braces Adjust…', 32350, '32,350'],
+    ['Composite Fill…', 20850, '20,850'],
+    ['Teeth Cleaning', 18000, '18,000'],
+  ], 200000);
+  const dentist = anCard('Revenue by dentist', [
+    ['Dr. Prada', 592540, '592,540'],
+    ['Dr. Hachi', 315680, '315,680'],
+  ], 640000);
+  const patients = anCard('Top patients', [
+    ['Michelle Nava…', 87530, '87,530'],
+    ['Andrea Santos', 76600, '76,600'],
+    ['Isabella Garcia', 69350, '69,350'],
+    ['Adrian Sy', 55130, '55,130'],
+    ['Samantha Cruz', 53030, '53,030'],
+    ['Katrina Lopez', 47800, '47,800'],
+  ], 92000);
+  const payment = anCard('By payment status', [
+    ['Paid', 790780, '790,780'],
+    ['Partial', 57300, '57,300'],
+    ['Unpaid', 59490, '59,490'],
+  ], 830000);
+  return `<div class="uiscreen">
+    ${statusBar('3:28', { low: true })}
+    <div class="an-scroll" style="transform: translateY(-118px)">
+      ${service}
+      ${dentist}
+      ${patients}
+      ${payment}
+      <div class="an-ghost">Per-dentist performance</div>
+    </div>
+    <div class="an-fab">${I.plusBig}</div>
+    ${navBar('more')}
+  </div>`;
+}
+
+module.exports = { CSS_UI: CSS_UI + CSS_EXTRA, masterHome, masterScribe, masterAsk, masterVisits, masterAnalytics, mascotSVG };

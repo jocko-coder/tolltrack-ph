@@ -4,7 +4,7 @@
 const { masterA, CSS_A } = require('./masterA');
 const { masterB, masterC, CSS_B, CSS_C, check } = require('./masterBC');
 const { masterD, CSS_D } = require('./masterD');
-const { CSS_UI, masterHome, masterScribe } = require('./masterUI');
+const { CSS_UI, masterScribe, masterVisits, masterAnalytics } = require('./masterUI');
 
 /* ---------- shared slide-level css ---------- */
 const CSS_SHARED = `
@@ -129,18 +129,18 @@ function macro({ masterHTML, masterW, masterH, transform, blurPx, maskCss, bg })
 }
 
 /* =============================== SLIDE 2 =============================== */
-// Real Home / Morning Report — macro crop into "₱88,497 is waiting to be
-// collected" + the mascot, tilted. Uses a pre-rendered bitmap plate: live DOM
-// at scale ~2.8 × dpr 3 exceeds Chromium's compositor texture limits.
+// Real Analytics dashboard — macro crop into "Revenue by dentist · ₱592,540",
+// tilted. Uses a pre-rendered bitmap plate: live DOM at macro scale × dpr 3
+// exceeds Chromium's compositor texture limits and drops tiles.
 const PLATE_A = '<img src="plate-a.png" style="display:block;width:430px;height:932px">';
-const PLATE_HOME = '<img src="plate-home.png" style="display:block;width:430px;height:932px">';
+const PLATE_ANALYTICS = '<img src="plate-analytics.png" style="display:block;width:430px;height:932px">';
 
 const s2m = macro({
-  masterHTML: PLATE_HOME,
+  masterHTML: PLATE_ANALYTICS,
   masterW: 430, masterH: 932,
-  transform: 'translate(150px, 150px) rotate(-20deg) scale(2.72)',
+  transform: 'translate(70px, 205px) rotate(-18deg) scale(2.62)',
   blurPx: 11,
-  maskCss: 'radial-gradient(105% 105% at 50% 44%, transparent 40%, black 78%)',
+  maskCss: 'radial-gradient(105% 105% at 48% 46%, transparent 40%, black 80%)',
   bg: 'background: linear-gradient(200deg, #0C3A3B 0%, #081619 68%);',
 });
 const slide2 = {
@@ -257,7 +257,7 @@ const slide7 = {
   css: CSS_SHARED + CSS_UI + CSS_D + `
 .hero-rig { transform: scale(0.82); }
 `,
-  body: masterD({ screenHTML: masterHome() }),
+  body: masterD({ screenHTML: masterVisits() }),
 };
 
 /* =============================== SLIDE 8 =============================== */
@@ -267,7 +267,7 @@ const slide8 = {
   css: CSS_SHARED + CSS_UI + CSS_D + `
 .hero-rig { transform: translate(-150px, 240px) scale(1.02); }
 `,
-  body: masterD({ screenHTML: masterHome() }),
+  body: masterD({ screenHTML: masterVisits() }),
 };
 
 /* =============================== SLIDE 9 =============================== */
