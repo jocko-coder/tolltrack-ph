@@ -15,6 +15,7 @@ const BUILDS = {
   animatic: { mod: './animatic', dur: 6.4, out: 'perla-ad-animatic' },
   commercial: { mod: './commercial', dur: 26.4, out: 'perla-ad' },
   teamad: { mod: './teamad', dur: 24.2, out: 'perla-ad-team' },
+  montage: { mod: './montage', dur: 20.1, out: 'perla-carousel-montage' },
 };
 
 async function main() {
