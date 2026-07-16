@@ -33,11 +33,16 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 /* cold open */
 .co{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center}
 .co .mark{margin:0 auto 46px;width:130px;height:130px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 26px rgba(53,214,199,0.9));will-change:transform,opacity}
-.krow{overflow:hidden;display:block}.kw{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 8px}
+/* kinetic type: .kw masks the rise (overflow toggled to visible once settled
+   so the glow spills as a soft halo, never a clipped box) */
+.krow{overflow:visible;display:block}.kw{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 10px}
 .kwi{display:inline-block;transform:translateY(115%);will-change:transform}
+.co{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center}
 .co .r1{font-size:74px;font-weight:800;letter-spacing:-0.02em;color:#eafffb;line-height:1.05}
-.co .r2{font-size:132px;font-weight:900;letter-spacing:-0.03em;line-height:1.0;margin-top:8px}
-.co .r2 .kwi{color:#35D6C7;text-shadow:0 0 46px rgba(53,214,199,0.85)}
+.r2wrap{position:relative;display:inline-block;margin-top:8px}
+.copad{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:130%;height:260%;background:radial-gradient(50% 50% at 50% 50%,rgba(21,194,182,0.32),transparent 68%);filter:blur(34px);opacity:0;pointer-events:none}
+.co .r2{position:relative;font-size:130px;font-weight:900;letter-spacing:-0.03em;line-height:1.0}
+.co .r2 .kwi{color:#35D6C7;text-shadow:0 0 34px rgba(53,214,199,0.55)}
 
 /* chat card */
 .chatwrap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:788px}
@@ -88,12 +93,13 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 .tile{width:236px;height:180px;border-radius:28px;border:1.5px solid rgba(53,214,199,0.35);background:linear-gradient(160deg,rgba(14,42,44,0.6),rgba(6,18,20,0.5));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#eafffb;font-size:26px;font-weight:700;opacity:0;will-change:transform,opacity,box-shadow}
 .tile .ti{color:#5CF2E3}
 
-/* hook */
-.hookline{position:absolute;left:0;right:0;top:50%;transform:translateY(-54%);text-align:center}
-.hookline .r2{font-size:150px;font-weight:900;letter-spacing:-0.03em;line-height:1.0}
-.hookline .r2 .kwi{color:#35D6C7;text-shadow:0 0 48px rgba(53,214,199,0.85)}
-.hooksub{position:absolute;left:0;right:0;top:calc(50% + 130px);text-align:center;font-size:34px;font-weight:600;color:rgba(255,255,255,0.6);opacity:0}
-.hooksweep{position:absolute;left:0;right:0;top:50%;transform:translateY(-54%);height:300px;pointer-events:none;mix-blend-mode:screen;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,0.16) 50%,transparent 58%);opacity:0}
+/* hook — flex column so the subline always sits clear of the headline */
+.hookbox{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hookpad{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:840px;height:560px;background:radial-gradient(50% 50% at 50% 50%,rgba(21,194,182,0.24),transparent 68%);filter:blur(46px);opacity:0;pointer-events:none}
+.hookbox .r2{position:relative;font-size:134px;font-weight:900;letter-spacing:-0.03em;line-height:1.06}
+.hookbox .r2 .kwi{color:#35D6C7;text-shadow:0 0 36px rgba(53,214,199,0.55)}
+.hooksub{position:relative;margin-top:54px;text-align:center;font-size:34px;font-weight:600;letter-spacing:0.02em;color:rgba(255,255,255,0.55);opacity:0}
+.hooksweep{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:340px;pointer-events:none;mix-blend-mode:screen;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,0.14) 50%,transparent 58%);opacity:0}
 
 /* outro */
 .logo{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
@@ -116,7 +122,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
     <div class="co">
       <div class="mark" id="coMark">${spark('#5CF2E3', 130)}</div>
       <div class="krow r1"><span class="kw"><span class="kwi">Meet your</span></span><span class="kw"><span class="kwi">clinic's</span></span></div>
-      <div class="krow r2"><span class="kw"><span class="kwi">AI teammate.</span></span></div>
+      <div class="r2wrap"><div class="copad" id="coPad"></div><div class="krow r2"><span class="kw"><span class="kwi">AI teammate.</span></span></div></div>
     </div>
   </div>
 
@@ -172,8 +178,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 
   <!-- HOOK -->
   <div class="scene" id="sceneHook">
-    <div class="hookline"><div class="krow r2"><span class="kw"><span class="kwi">Ask her</span></span><span class="kw"><span class="kwi">anything.</span></span></div></div>
-    <div class="hooksub" id="hookSub">part of the team · on call 24/7</div>
+    <div class="hookbox">
+      <div class="hookpad" id="hookPad"></div>
+      <div class="krow r2"><span class="kw"><span class="kwi">Ask her</span></span></div>
+      <div class="krow r2"><span class="kw"><span class="kwi">anything.</span></span></div>
+      <div class="hooksub" id="hookSub">part of the team · on call 24/7</div>
+    </div>
     <div class="hooksweep" id="hookSweep"></div>
   </div>
 
@@ -206,10 +216,15 @@ function mkRings(h){for(let i=0;i<5;i++){const b=document.createElement('b');b.d
 mkRings(S('gRings'));
 
 let t=0;
-function sceneFx(id,w){const o=vis(t,w);const el=S(id);el.style.opacity=o;el.style.transform='scale('+lerp(1.05,1,eOut(clamp(seg(t,w[0],w[0]+0.55))))+')';return o;}
+// smoother enter: fade + gentle rise + slight scale settle; subtle exit lift
+function sceneFx(id,w){const o=vis(t,w);const el=S(id);el.style.opacity=o;
+  const ip=eOut(clamp(seg(t,w[0],w[0]+0.6)));const ex=clamp(seg(t,w[1]-0.24,w[1]));
+  el.style.transform='translateY('+(lerp(26,0,ip)+ex*-14)+'px) scale('+(lerp(1.05,1,ip)+ex*0.02)+')';return o;}
 function fr(id,a,b,l,dy){const el=S(id);const p=eBack(seg(l,a,b));el.style.opacity=clamp(seg(l,a,b-0.12));el.style.transform='translateY('+lerp(dy||22,0,clamp(p))+'px)';}
 function pop(id,a,b,l){const el=S(id);const p=eBack(seg(l,a,b));el.style.opacity=clamp(seg(l,a,b-0.14));el.style.transform='translateY('+lerp(18,0,clamp(p))+'px) scale('+lerp(0.92,1,clamp(p))+')';}
-function krise(sel,l,base,stag){document.querySelectorAll(sel).forEach((el,i)=>{const d=base+i*stag;el.style.transform='translateY('+lerp(115,0,clamp(eBack(seg(l,d,d+0.55))))+'%)';});}
+// kinetic rise on .kw masks; overflow flips to visible once settled so the glow
+// spills as a soft halo instead of a clipped rectangular box
+function krise(scope,l,base,stag){document.querySelectorAll(scope+' .kw').forEach((kw,i)=>{const inner=kw.firstElementChild;const d=base+i*stag;const prog=seg(l,d,d+0.6);inner.style.transform='translateY('+lerp(115,0,clamp(eBack(prog)))+'%)';kw.style.overflow=prog>0.86?'visible':'hidden';});}
 
 // windows
 const CO=[0.3,3.3], CA=[3.2,8.7], CB=[8.6,14.0], GR=[13.9,18.3], HK=[18.2,21.0], LG=[20.9,24.2];
@@ -229,7 +244,8 @@ window.seek=function(tt){
   // COLD OPEN
   if(oCO>0.001){const l=t-CO[0];
     const mp=eBack(seg(l,0.1,0.8));S('coMark').style.opacity=clamp(seg(l,0.1,0.5));S('coMark').style.transform='scale('+lerp(0.3,1,clamp(mp))+') rotate('+lerp(-90,0,clamp(eOut(seg(l,0.1,0.9))))+'deg)';
-    krise('#sceneCO .kwi',l,0.55,0.13);
+    krise('#sceneCO',l,0.55,0.13);
+    S('coPad').style.opacity=eOut(seg(l,0.75,1.25))*(0.85+0.15*pulse(t,2.2));
   }
 
   // CHAT A
@@ -241,6 +257,7 @@ window.seek=function(tt){
     const showType=l>2.45&&l<3.15;S('caType').style.opacity=showType?clamp(seg(l,2.45,2.65)):(l>=3.15?0:0);
     document.querySelectorAll('#caType .typing i').forEach((el,i)=>{el.style.transform='translateY('+(-8*pulse(t*1.0+i*0.6,7))+'px)';el.style.opacity=0.4+0.6*pulse(t+i*0.6,7);});
     pop('caReply',3.15,3.7,l);
+    S('caCard').style.transform='translateY('+(Math.sin(t*1.1)*5)+'px)';
     S('caCard').style.boxShadow='0 0 '+(46+18*pulse(t,2))+'px rgba(53,214,199,0.3)';
   }
 
@@ -253,6 +270,7 @@ window.seek=function(tt){
     const showType=l>2.25&&l<2.95;S('cbType').style.opacity=showType?clamp(seg(l,2.25,2.45)):0;
     document.querySelectorAll('#cbType .typing i').forEach((el,i)=>{el.style.transform='translateY('+(-8*pulse(t*1.0+i*0.6,7))+'px)';el.style.opacity=0.4+0.6*pulse(t+i*0.6,7);});
     pop('cbReply',2.95,3.55,l);
+    S('cbCard').style.transform='translateY('+(Math.sin(t*1.1+1)*5)+'px)';
     S('cbCard').style.boxShadow='0 0 '+(46+20*pulse(t,2))+'px rgba(139,92,246,0.34)';
   }
 
@@ -265,9 +283,10 @@ window.seek=function(tt){
 
   // HOOK
   if(oHK>0.001){const l=t-HK[0];
-    krise('#sceneHook .kwi',l,0.15,0.14);
-    const sw=S('hookSweep');sw.style.opacity=1;sw.style.transform='translateY(-54%) translateX('+lerp(-1200,1200,eOut(seg(l,0.5,1.2)))+'px)';
-    S('hookSub').style.opacity=eOut(seg(l,0.8,1.15));
+    krise('#sceneHook',l,0.15,0.16);
+    S('hookPad').style.opacity=eOut(seg(l,0.45,1.0))*(0.85+0.15*pulse(t,2.4));
+    const sw=S('hookSweep');sw.style.opacity=1;sw.style.transform='translateY(-50%) translateX('+lerp(-1200,1200,eOut(seg(l,0.55,1.3)))+'px)';
+    S('hookSub').style.opacity=eOut(seg(l,0.95,1.3));
   }
 
   // OUTRO
