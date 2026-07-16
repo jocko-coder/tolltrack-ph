@@ -5,6 +5,7 @@
 'use strict';
 
 const MASTERS = 'file:///home/user/tolltrack-ph/perla-carousel/out/masters';
+const BG = 'file:///home/user/tolltrack-ph/perla-carousel/build/montage-bg';
 const GRAIN = encodeURIComponent(
   `<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/><feColorMatrix type='saturate' values='0'/></filter><rect width='260' height='260' filter='url(#n)'/></svg>`
 );
@@ -26,8 +27,8 @@ const KB = [
 function buildHTML() {
   let slides = '';
   for (let i = 1; i <= 9; i++) {
-    const src = `${MASTERS}/perla-carousel-${String(i).padStart(2, '0')}.png`;
-    slides += `<div class="slide" data-i="${i - 1}"><img class="bg" src="${src}"><div class="fgbox"><img class="fg" src="${src}"></div></div>`;
+    const name = `perla-carousel-${String(i).padStart(2, '0')}.png`;
+    slides += `<div class="slide" data-i="${i - 1}"><img class="bg" src="${BG}/${name}"><div class="fgbox"><img class="fg" src="${MASTERS}/${name}"></div></div>`;
   }
   return `<!doctype html><html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -35,7 +36,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#000}
 #stage{position:relative;width:1080px;height:1920px;background:#04100f;overflow:hidden}
 .slide{position:absolute;inset:0;opacity:0;will-change:opacity}
 .bg{position:absolute;left:50%;top:50%;width:1180px;height:2100px;transform:translate(-50%,-50%) scale(1.25);
-  object-fit:cover;filter:blur(56px) brightness(0.42) saturate(1.2);will-change:transform}
+  object-fit:cover;will-change:transform}
 .fgbox{position:absolute;left:50%;top:50%;width:1080px;height:1350px;transform:translate(-50%,-50%);
   overflow:hidden;box-shadow:0 50px 130px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.03)}
 .fg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
