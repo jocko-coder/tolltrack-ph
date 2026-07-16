@@ -102,8 +102,8 @@ ${overlays ? '<div class="vignette"></div>\n<div class="grain"></div>' : ''}
 }
 
 // pass-2 page: sharp base image + blurred masked copy (photographic DOF),
-// then vignette + grain on top.
-function dofPage({ title, imgSrc, blurPx, maskCss }) {
+// optional crisp overlay (wordmark / CTA), then vignette + grain on top.
+function dofPage({ title, imgSrc, blurPx, maskCss, overlay }) {
   const css = `
 .base, .blurcopy { position: absolute; inset: 0; width: 1080px; height: 1350px; }
 .blurcopy {
@@ -111,8 +111,10 @@ function dofPage({ title, imgSrc, blurPx, maskCss }) {
   transform: scale(${1 + (blurPx * 2.4) / 1080});
   -webkit-mask-image: ${maskCss};
   mask-image: ${maskCss};
-}`;
-  const body = `<img class="base" src="${imgSrc}"><img class="blurcopy" src="${imgSrc}">`;
+}
+.ovl { position: absolute; z-index: 5; }
+${overlay ? overlay.css || '' : ''}`;
+  const body = `<img class="base" src="${imgSrc}"><img class="blurcopy" src="${imgSrc}">${overlay ? overlay.html || '' : ''}`;
   return page({ title, css, body, overlays: true });
 }
 

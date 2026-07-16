@@ -35,35 +35,38 @@ async function main() {
     args: ['--force-color-profile=srgb', '--no-sandbox', '--disable-lcd-text'],
   });
 
-  // flat high-res plates for the bitmap-macro slides: MASTER A (slide 6) and
-  // the real Home screen (slide 2). Live DOM at macro scale × dpr 3 exceeds
-  // Chromium's compositor texture limits and drops tiles.
+  // flat high-res plates of every real screen. All nine slides are extreme
+  // macro crops of these, so each is rendered once at high dpr and the crops
+  // sample the bitmap — live DOM at macro scale × dpr 3 drops compositor tiles.
   {
-    const { masterA, CSS_A } = require('./masterA');
-    const { CSS_UI, masterAnalytics } = require('./masterUI');
+    const { CSS_UI, masterHome, masterScribe, masterVisits, masterAnalytics, masterAsk } = require('./masterUI');
     const plates = [
-      { name: 'plate-a', css: CSS_A, body: masterA() },
-      { name: 'plate-analytics', css: CSS_UI, body: masterAnalytics() },
+      { name: 'plate-home', css: CSS_UI, body: masterHome({ mascot: false }), h: 932, dpr: 8 },
+      { name: 'plate-scribe', css: CSS_UI, body: masterScribe(), h: 932, dpr: 8 },
+      { name: 'plate-analytics', css: CSS_UI, body: masterAnalytics(), h: 932, dpr: 8 },
+      { name: 'plate-ask', css: CSS_UI, body: masterAsk({ mascot: false }), h: 932, dpr: 8 },
+      { name: 'plate-visits', css: CSS_UI + '.uiscreen{height:1120px}', body: masterVisits(), h: 1120, dpr: 7 },
     ];
-    const pctx = await browser.newContext({
-      viewport: { width: 430, height: 932 },
-      deviceScaleFactor: 8,
-    });
-    const pp = await pctx.newPage();
     for (const pl of plates) {
+      const frame = `.artboard{width:430px;height:${pl.h}px} html,body{width:430px;height:${pl.h}px}`;
       fs.writeFileSync(
         path.join(BUILD, `${pl.name}.html`),
-        page({ title: pl.name, css: pl.css, body: pl.body, overlays: false })
+        page({ title: pl.name, css: pl.css + frame, body: pl.body, overlays: false })
       );
+      const pctx = await browser.newContext({
+        viewport: { width: 430, height: pl.h },
+        deviceScaleFactor: pl.dpr,
+      });
+      const pp = await pctx.newPage();
       await pp.goto('file://' + path.join(BUILD, `${pl.name}.html`));
       await pp.evaluate(() => document.fonts.ready);
       await pp.waitForTimeout(250);
       await pp.screenshot({
         path: path.join(BUILD, `${pl.name}.png`),
-        clip: { x: 0, y: 0, width: 430, height: 932 },
+        clip: { x: 0, y: 0, width: 430, height: pl.h },
       });
+      await pctx.close();
     }
-    await pctx.close();
   }
 
   const ctx = await browser.newContext({
@@ -89,6 +92,7 @@ async function main() {
         imgSrc: `${s.name}-pass1.png`,
         blurPx: s.post.blurPx,
         maskCss: s.post.maskCss,
+        overlay: s.post.overlay,
       });
       const file2 = path.join(BUILD, `${s.name}-pass2.html`);
       fs.writeFileSync(file2, html2);

@@ -246,7 +246,7 @@ function scribeWave() {
 }
 
 /* ================= HOME ================= */
-function masterHome() {
+function masterHome({ mascot = true } = {}) {
   return `<div class="uiscreen">
     ${statusBar('3:25', { low: true })}
     <div class="home-scroll">
@@ -269,7 +269,7 @@ function masterHome() {
         <div class="mr-eyebrow">PERLA · MORNING REPORT</div>
         <div class="mr-head">Good afternoon, <span class="teal">Dr. Santos.</span></div>
         <div class="mr-row">
-          <div class="mr-mascot">${mascotSVG(118)}</div>
+          <div class="mr-mascot">${mascot ? mascotSVG(118) : ''}</div>
           <div>
             <div class="mr-amount"><span class="pesoG">P</span>88,497 is waiting to be collected.</div>
             <div class="mr-sub">Perla answered 38 calls · 21 booked automatically.</div>
@@ -335,7 +335,7 @@ function masterScribe() {
 }
 
 /* ================= ASK PERLA ================= */
-function masterAsk() {
+function masterAsk({ mascot = true } = {}) {
   return `<div class="ask-screen">
     ${statusBar('10:42', { bell: true })}
     <div class="ask-top">
@@ -344,7 +344,7 @@ function masterAsk() {
       <div class="cir2"><div class="cir">${I.clock}</div><div class="cir">${I.pencil}</div></div>
     </div>
     <div class="ask-center">
-      <div class="mas">${mascotSVG(168)}</div>
+      ${mascot ? `<div class="mas">${mascotSVG(168)}</div>` : ''}
       <div class="ask-hello">Hello, JerickoSmile</div>
       <div class="ask-head">How can I help<br>you today?</div>
     </div>
