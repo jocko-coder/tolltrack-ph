@@ -35,25 +35,34 @@ async function main() {
     args: ['--force-color-profile=srgb', '--no-sandbox', '--disable-lcd-text'],
   });
 
-  // flat high-res plate of MASTER A for the bitmap-macro slides (2 & 6)
+  // flat high-res plates for the bitmap-macro slides: MASTER A (slide 6) and
+  // the real Home screen (slide 2). Live DOM at macro scale × dpr 3 exceeds
+  // Chromium's compositor texture limits and drops tiles.
   {
     const { masterA, CSS_A } = require('./masterA');
-    fs.writeFileSync(
-      path.join(BUILD, 'plate-a.html'),
-      page({ title: 'plate-a', css: CSS_A, body: masterA(), overlays: false })
-    );
+    const { CSS_UI, masterHome } = require('./masterUI');
+    const plates = [
+      { name: 'plate-a', css: CSS_A, body: masterA() },
+      { name: 'plate-home', css: CSS_UI, body: masterHome() },
+    ];
     const pctx = await browser.newContext({
       viewport: { width: 430, height: 932 },
       deviceScaleFactor: 8,
     });
     const pp = await pctx.newPage();
-    await pp.goto('file://' + path.join(BUILD, 'plate-a.html'));
-    await pp.evaluate(() => document.fonts.ready);
-    await pp.waitForTimeout(250);
-    await pp.screenshot({
-      path: path.join(BUILD, 'plate-a.png'),
-      clip: { x: 0, y: 0, width: 430, height: 932 },
-    });
+    for (const pl of plates) {
+      fs.writeFileSync(
+        path.join(BUILD, `${pl.name}.html`),
+        page({ title: pl.name, css: pl.css, body: pl.body, overlays: false })
+      );
+      await pp.goto('file://' + path.join(BUILD, `${pl.name}.html`));
+      await pp.evaluate(() => document.fonts.ready);
+      await pp.waitForTimeout(250);
+      await pp.screenshot({
+        path: path.join(BUILD, `${pl.name}.png`),
+        clip: { x: 0, y: 0, width: 430, height: 932 },
+      });
+    }
     await pctx.close();
   }
 

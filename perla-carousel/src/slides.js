@@ -4,6 +4,7 @@
 const { masterA, CSS_A } = require('./masterA');
 const { masterB, masterC, CSS_B, CSS_C, check } = require('./masterBC');
 const { masterD, CSS_D } = require('./masterD');
+const { CSS_UI, masterHome, masterScribe } = require('./masterUI');
 
 /* ---------- shared slide-level css ---------- */
 const CSS_SHARED = `
@@ -128,22 +129,23 @@ function macro({ masterHTML, masterW, masterH, transform, blurPx, maskCss, bg })
 }
 
 /* =============================== SLIDE 2 =============================== */
-// score macro: the Doto 37, amber→teal gradient filling the frame, ~30° tilt
-// slides 2 & 6 transform a pre-rendered bitmap plate of MASTER A: live DOM at
-// scale ~3.3 × dpr 3 exceeds Chromium's compositor texture limits and drops tiles
+// Real Home / Morning Report — macro crop into "₱88,497 is waiting to be
+// collected" + the mascot, tilted. Uses a pre-rendered bitmap plate: live DOM
+// at scale ~2.8 × dpr 3 exceeds Chromium's compositor texture limits.
 const PLATE_A = '<img src="plate-a.png" style="display:block;width:430px;height:932px">';
+const PLATE_HOME = '<img src="plate-home.png" style="display:block;width:430px;height:932px">';
 
 const s2m = macro({
-  masterHTML: PLATE_A,
+  masterHTML: PLATE_HOME,
   masterW: 430, masterH: 932,
-  transform: 'translate(284px, 663px) rotate(-24deg) scale(3.6)',
-  blurPx: 12,
-  maskCss: 'radial-gradient(100% 100% at 42% 38%, transparent 32%, black 70%)',
-  bg: 'background: linear-gradient(200deg, #F5B85C 0%, #2FC4A8 60%, #15C2B6 100%);',
+  transform: 'translate(150px, 150px) rotate(-20deg) scale(2.72)',
+  blurPx: 11,
+  maskCss: 'radial-gradient(105% 105% at 50% 44%, transparent 40%, black 78%)',
+  bg: 'background: linear-gradient(200deg, #0C3A3B 0%, #081619 68%);',
 });
 const slide2 = {
   name: 'perla-carousel-02',
-  css: CSS_SHARED + CSS_A + s2m.css,
+  css: CSS_SHARED + s2m.css,
   body: s2m.body,
   post: s2m.post,
 };
@@ -201,18 +203,18 @@ const slide4 = {
 };
 
 /* =============================== SLIDE 5 =============================== */
-// full UI floating as glass panel over duotone plate
+// real Perla Scribe screen floating as a glass panel over the duotone plate
 const slide5 = {
   name: 'perla-carousel-05',
-  css: CSS_SHARED + CSS_A + `
+  css: CSS_SHARED + CSS_UI + `
 .s5-panel {
   position: absolute; left: 50%; top: 50%; width: 430px; height: 932px;
   transform: translate(-50%, -50%) perspective(1900px) rotateY(-8deg) rotateX(3deg) rotate(-2deg) scale(1.16);
   border-radius: 54px; overflow: hidden;
-  border: 1.5px solid rgba(255,255,255,0.45);
+  border: 1.5px solid rgba(255,255,255,0.28);
   box-shadow: 0 80px 160px rgba(3,20,24,0.6), 0 30px 60px rgba(3,20,24,0.5);
 }
-.s5-panel .screen { border-radius: 54px; }
+.s5-panel .uiscreen { border-radius: 54px; }
 .s5-glowtop {
   position: absolute; inset: 0; z-index: 3; pointer-events: none;
   background: linear-gradient(115deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 60%);
@@ -228,7 +230,7 @@ const slide5 = {
 <div class="mesh"></div>
 <div class="s5-fig1"></div>
 <div class="s5-fig2"></div>
-<div class="s5-panel">${masterA()}<div class="s5-glowtop"></div></div>
+<div class="s5-panel">${masterScribe()}<div class="s5-glowtop"></div></div>
 `,
 };
 
@@ -252,20 +254,20 @@ const slide6 = {
 /* =============================== SLIDE 7 =============================== */
 const slide7 = {
   name: 'perla-carousel-07',
-  css: CSS_SHARED + CSS_A + CSS_D + `
+  css: CSS_SHARED + CSS_UI + CSS_D + `
 .hero-rig { transform: scale(0.82); }
 `,
-  body: masterD({ screenHTML: masterA() }),
+  body: masterD({ screenHTML: masterHome() }),
 };
 
 /* =============================== SLIDE 8 =============================== */
 // same render, punched in ~20%, phone low-left, hand dominating upper frame
 const slide8 = {
   name: 'perla-carousel-08',
-  css: CSS_SHARED + CSS_A + CSS_D + `
+  css: CSS_SHARED + CSS_UI + CSS_D + `
 .hero-rig { transform: translate(-150px, 240px) scale(1.02); }
 `,
-  body: masterD({ screenHTML: masterA() }),
+  body: masterD({ screenHTML: masterHome() }),
 };
 
 /* =============================== SLIDE 9 =============================== */
