@@ -13,6 +13,7 @@ const ROOT = path.join(__dirname, '..', '..');
 
 const BUILDS = {
   animatic: { mod: './animatic', dur: 6.4, out: 'perla-ad-animatic' },
+  commercial: { mod: './commercial', dur: 25.6, out: 'perla-ad' },
 };
 
 async function main() {
