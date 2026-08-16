@@ -1,0 +1,10 @@
+{
+  "name": "perez-carousel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Perez Tracker UI/UX macro carousel — nine 1080x1350 shots",
+  "dependencies": {
+    "playwright-core": "^1.61.1",
+    "sharp": "^0.35.3"
+  }
+}
